@@ -1,0 +1,24 @@
+requests==2.25.1
+beautifulsoup4==4.9.3
+python-whois==0.7.3
+Pillow==8.1.0
+PyPDF2==1.26.0
+webbrowser==0.1.0
+
+Instructions to Install Dependencies:
+Create a virtual environment (optional but recommended):
+
+bash
+Copy
+Edit
+python3 -m venv osint-env
+source osint-env/bin/activate  # On Windows use osint-env\Scripts\activate
+
+Install the required libraries: If you've saved the dependencies in a requirements.txt file, you can easily install them by running:
+
+bash
+Copy
+Edit
+pip install -r requirements.txt
+
+This will install the libraries required for web scraping, WHOIS lookups, metadata extraction, and other tasks.
