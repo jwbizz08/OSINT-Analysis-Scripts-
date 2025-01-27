@@ -1,0 +1,297 @@
+1. Web Scraper for Public Information
+This script scrapes public information from a target website, such as social media profiles or contact details.
+
+import requests
+from bs4 import BeautifulSoup
+
+def scrape_public_info(url):
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Example: Extract email addresses
+        emails = set()
+        for a_tag in soup.find_all('a', href=True):
+            if 'mailto:' in a_tag['href']:
+                emails.add(a_tag['href'].replace('mailto:', ''))
+        
+        print("Found emails:")
+        for email in emails:
+            print(email)
+    else:
+        print(f"Failed to access {url}. Status code: {response.status_code}")
+
+# Example usage
+scrape_public_info("https://example.com")
+
+2. Social Media Profile Finder
+Search for user profiles across multiple social media platforms.
+
+python
+Copy
+Edit
+platforms = [
+    "https://twitter.com/",
+    "https://www.linkedin.com/in/",
+    "https://github.com/",
+    "https://www.instagram.com/"
+]
+
+def find_profiles(username):
+    print(f"Searching profiles for: {username}")
+    for platform in platforms:
+        print(f"{platform}{username}")
+
+# Example usage
+find_profiles("example_username")
+
+3. Domain WHOIS Lookup
+Fetch WHOIS data for a domain to gather registration details.
+
+python
+Copy
+Edit
+import whois
+
+def domain_whois_lookup(domain):
+    try:
+        domain_info = whois.whois(domain)
+        print("Domain Information:")
+        print(f"Domain Name: {domain_info.domain_name}")
+        print(f"Registrar: {domain_info.registrar}")
+        print(f"Creation Date: {domain_info.creation_date}")
+        print(f"Expiration Date: {domain_info.expiration_date}")
+        print(f"Nameservers: {domain_info.name_servers}")
+    except Exception as e:
+        print(f"Error fetching WHOIS data: {e}")
+
+# Example usage
+domain_whois_lookup("example.com")
+
+4. Metadata Extractor
+Extract metadata from files (e.g., images, documents) to find hidden information.
+
+python
+Copy
+Edit
+from os.path import basename
+from PIL import Image
+from PIL.ExifTags import TAGS
+
+def extract_metadata(file_path):
+    try:
+        image = Image.open(file_path)
+        exif_data = image._getexif()
+        
+        print(f"Metadata for {basename(file_path)}:")
+        if exif_data:
+            for tag_id, value in exif_data.items():
+                tag_name = TAGS.get(tag_id, tag_id)
+                print(f"{tag_name}: {value}")
+        else:
+            print("No EXIF data found.")
+    except Exception as e:
+        print(f"Error reading metadata: {e}")
+
+# Example usage
+extract_metadata("example.jpg")
+
+5. Google Dork Query Automation
+Automate Google searches for specific dork queries to find sensitive or indexed information.
+
+python
+Copy
+Edit
+import webbrowser
+
+def google_dork(query):
+    base_url = "https://www.google.com/search?q="
+    webbrowser.open(base_url + query)
+
+# Example usage
+dork_query = 'site:example.com "admin"'
+google_dork(dork_query)
+
+6. IP Geolocation Finder
+Find geolocation information for an IP address using an external API (e.g., ip-api.com).
+
+python
+Copy
+Edit
+import requests
+
+def ip_geolocation(ip):
+    url = f"http://ip-api.com/json/{ip}"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        print(f"IP Address: {data['query']}")
+        print(f"Country: {data['country']}")
+        print(f"Region: {data['regionName']}")
+        print(f"City: {data['city']}")
+        print(f"ISP: {data['isp']}")
+        print(f"Latitude: {data['lat']}, Longitude: {data['lon']}")
+    else:
+        print(f"Failed to fetch data for IP: {ip}")
+
+# Example usage
+ip_geolocation("8.8.8.8")
+
+3. Subdomain Finder Discover subdomains of a target domain using a wordlist.
+
+python
+Copy
+Edit
+import requests
+
+def subdomain_finder(domain, wordlist):
+    with open(wordlist, 'r') as file:
+        subdomains = file.read().splitlines()
+
+    print(f"Scanning subdomains for {domain}...")
+    for sub in subdomains:
+        url = f"http://{sub}.{domain}"
+        try:
+            response = requests.get(url, timeout=2)
+            if response.status_code == 200:
+                print(f"Found: {url}")
+        except requests.ConnectionError:
+            pass
+
+# Example usage
+subdomain_finder("example.com", "subdomains.txt")
+
+4. Username Enumeration Script Check for the existence of a username across multiple platforms.
+
+python
+Copy
+Edit
+platforms = [
+    "https://twitter.com/",
+    "https://github.com/",
+    "https://www.instagram.com/",
+    "https://www.reddit.com/user/"
+]
+
+def username_lookup(username):
+    print(f"Checking availability of username: {username}")
+    for platform in platforms:
+        url = platform + username
+        try:
+            response = requests.get(url, timeout=5)
+            if response.status_code == 200:
+                print(f"Found: {url}")
+            else:
+                print(f"Not found: {url}")
+        except requests.ConnectionError:
+            print(f"Error connecting to: {url}")
+
+# Example usage
+username_lookup("example_username")
+
+5. Email Breach CheckerUse the Have I Been Pwned API to check if an email is part of a data breach.
+
+python
+Copy
+Edit
+import requests
+
+def check_email_breach(email):
+    url = f"https://haveibeenpwned.com/api/v3/breachedaccount/{email}"
+    headers = {"hibp-api-key": "your_api_key"}  # Replace with your API key
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        breaches = response.json()
+        print(f"Email {email} found in the following breaches:")
+        for breach in breaches:
+            print(f"- {breach['Name']}: {breach['Domain']}")
+    elif response.status_code == 404:
+        print(f"No breaches found for {email}.")
+    else:
+        print(f"Error: {response.status_code}")
+
+# Example usage
+check_email_breach("example@example.com")
+
+6. PDF Metadata Extractor Extract metadata from PDF files to analyze document origins and modifications.
+
+python
+Copy
+Edit
+from PyPDF2 import PdfReader
+
+def extract_pdf_metadata(pdf_file):
+    try:
+        reader = PdfReader(pdf_file)
+        metadata = reader.metadata
+        
+        print(f"Metadata for {pdf_file}:")
+        for key, value in metadata.items():
+            print(f"{key}: {value}")
+    except Exception as e:
+        print(f"Error reading metadata: {e}")
+
+# Example usage
+extract_pdf_metadata("example.pdf")
+7. LinkedIn Profile Search Script Search LinkedIn profiles for specific keywords using Google Dorks.
+
+python
+Copy
+Edit
+import webbrowser
+
+def linkedin_search(keyword):
+    query = f'site:linkedin.com/in "{keyword}"'
+    url = f"https://www.google.com/search?q={query}"
+    webbrowser.open(url)
+
+# Example usage
+linkedin_search("cybersecurity analyst")
+
+8. Phone Number Lookup with External API Lookup phone numbers using an API like Numverify.
+
+python
+Copy
+Edit
+import requests
+
+def phone_lookup(number):
+    api_key = "your_api_key"  # Replace with your Numverify API key
+    url = f"http://apilayer.net/api/validate?access_key={api_key}&number={number}"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        print(f"Phone Number: {data['number']}")
+        print(f"Country: {data['country_name']}")
+        print(f"Carrier: {data['carrier']}")
+        print(f"Line Type: {data['line_type']}")
+    else:
+        print(f"Failed to lookup phone number: {number}")
+
+# Example usage
+phone_lookup("+14155552671")
+
+9. Reverse Image Search Automation Upload an image for reverse searching on Google or TinEye.
+
+python
+Copy
+Edit
+import webbrowser
+
+def reverse_image_search(image_path):
+    search_url = "https://www.google.com/searchbyimage?image_url="
+    tin_eye_url = "https://www.tineye.com/search/?url="
+    
+    # Use TinEye or Google by providing a public image URL
+    print("Choose a platform:")
+    print(f"1. Google: {search_url + image_path}")
+    print(f"2. TinEye: {tin_eye_url + image_path}")
+    webbrowser.open(search_url + image_path)
+
+# Example usage
+reverse_image_search("https://example.com/image.jpg")
